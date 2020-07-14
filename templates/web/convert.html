@@ -1,0 +1,48 @@
+{% extends "web/base.html" %}
+
+{% block content %}
+    <h1>Конвектор систем счисления</h1>
+    <form>
+        <div class="form-group">
+            <label for="number">Введите число</label>
+            <input type="text" class="form-control" id="number"/>
+            <label for="notation">Введите систему счисления</label>
+            <input type="text" class="form-control" id="notation"/>
+            <label for="notation1">Введите систему счисления в которую хотите перевести (2-36)</label>
+            <input type="text" class="form-control" id="notation1"/>
+        </div>
+        <div class="form-group">
+            <label for="textOutput">Результат</label>
+            <textarea class="form-control" id="textOutput" rows="5" disabled></textarea>
+        </div>
+        <div class="from-group">
+            <button type="button" class="btn btn-primary" id="translate">Перевести</button>
+        </div>
+    </form>
+{% endblock content %}
+
+{% block botton %}
+    <script>
+        let btnTranslate = document.getElementById('translate');
+        let number = document.getElementById('number');
+        let notation = document.getElementById('notation');
+        let notation1 = document.getElementById('notation1');
+        let textOutput = document.getElementById('textOutput');
+
+        btnTranslate.addEventListener('click', () => {
+            let xhr = new XMLHttpRequest();
+            xhr.open('POST', '/api/convert_base', true);
+            xhr.onreadystatechange = function () {
+                if (this.status !== 200) return;
+
+                textOutput.value = JSON.parse(xhr.responseText).result;
+            };
+
+            let data = new FormData();
+            data.append('number', number.value);
+            data.append('notation', notation.value);
+            data.append('notation1', notation1.value);
+            xhr.send(data);
+        });
+    </script>
+{% endblock botton %}
